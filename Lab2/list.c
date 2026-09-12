@@ -1,8 +1,14 @@
-#include <cstdio>
+#include <stdlib.h>
 #include "list.h"
 
 void Add(List* list, Item* item)
 {
+	if (list == NULL || item == NULL)
+	{
+		return;
+	}
+	item->next = NULL;
+	item->prev = list->tail;
 	if (list->head == NULL)
 	{
 		list->head = item;
@@ -14,11 +20,15 @@ void Add(List* list, Item* item)
 		item->prev = list->tail;
 		list->tail = item;
 	}
-	printf_s("+1");
 }
 
 int Count(List* list)
 {
+	if (list == NULL)
+	{
+		return 0;
+	}
+
 	int count = 0;
 	Item* cur = list->head;
 
@@ -33,14 +43,13 @@ int Count(List* list)
 
 Item* GetItem(List* list, int number)
 {
-	if (number <= 0)
+	if (list == NULL || number < 0)
 	{
-		printf("Ne Popal\n");
 		return NULL;
 	}
 
 	Item* cur = list->head;
-	for (int i = 1; i < number; i++)
+	for (int i = 0; i < number; i++)
 	{
 		if (cur == NULL)
 		{
@@ -90,20 +99,26 @@ Item* Remove(List* list, int number)
 void Delete(List* list, int number)
 {
 	Item* item = Remove(list, number);
-	delete item;
+	free(item);
 }
 
-void Insert(List* list, Item* item, int number)
+int Insert(List* list, Item* item, int number)
 {
-	if (list == NULL || item == NULL)
+	if (list == NULL || item == NULL || number < 0)
 	{
-		return;
+		return 0;
+	}
+
+	if (number == Count(list))
+	{
+		Add(list, item);
+		return 1;
 	}
 
 	Item* cur = GetItem(list, number);
 	if (cur == NULL)
 	{
-		return;
+		return 0;
 	}
 
 	item->prev = cur->prev;
@@ -119,6 +134,7 @@ void Insert(List* list, Item* item, int number)
 	}
 
 	cur->prev = item;
+	return 1;
 }
 
 int GetIndex(List* list, Item* item)
@@ -129,7 +145,7 @@ int GetIndex(List* list, Item* item)
 	}
 
 	Item* cur = list->head;
-	int number = 1;
+	int number = 0;
 	while (cur != NULL)
 	{
 		if (cur == item)
@@ -152,6 +168,6 @@ void Clear(List* list)
 
 	while (list->head != NULL)
 	{
-		Delete(list, 1);
+		Delete(list, 0);
 	}
 }

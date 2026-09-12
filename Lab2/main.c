@@ -1,9 +1,12 @@
-#include <cstdio>
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "list.h"
 
 void PrintList(List* list);
 
-int main()
+int main(void)
 {
 	List list;
 	int choice;
@@ -25,8 +28,8 @@ int main()
 		printf("8. GetIndex\n");
 		printf("9. PrintList\n");
 		printf("0. EXIT\n");
-		printf_s("Vvedite vibor: ");
-		if (scanf_s("%d", &choice) != 1)
+		printf("Vvedite vibor: ");
+		if (scanf("%d", &choice) != 1)
 		{
 			printf("ERROR: Nuzhno chislo\n");
 			break;
@@ -34,8 +37,8 @@ int main()
 
 		if ((choice >= 2 && choice <= 5) || choice == 8)
 		{
-			printf("Vvedite nomer elementa (s 1): ");
-			if (scanf_s("%d", &number) != 1)
+			printf("Vvedite nomer elementa (s 0): ");
+			if (scanf("%d", &number) != 1)
 			{
 				printf("ERROR: Nuzhno chislo\n");
 				break;
@@ -45,7 +48,12 @@ int main()
 		switch (choice)
 		{
 		case 1:
-			Add(&list, new Item{ NULL, NULL });
+			item = malloc(sizeof(Item));
+			if (item != NULL)
+			{
+				Add(&list, item);
+				printf("+1\n");
+			}
 			break;
 
 		case 2:
@@ -73,25 +81,28 @@ int main()
 			else
 			{
 				printf("Removed: %p  prev: %p  next: %p\n", item, item->prev, item->next);
-				delete item;
+				free(item);
 			}
 			break;
 
 		case 5:
-			if (GetItem(&list, number) == NULL)
+			item = malloc(sizeof(Item));
+			if (item == NULL)
 			{
-				printf("Element ne naiden\n");
+				printf("Net pamyati\n");
+				break;
 			}
-			else
+			if (Insert(&list, item, number) == 0)
 			{
-				item = new Item{ NULL, NULL };
-				Insert(&list, item, number);
-				printf("Vstavlen pered elementom %d\n", number);
+				free(item);
+				printf("Nevernyi indeks\n");
+				break;
 			}
+			printf("Vstavlen na mesto %d\n", number);
 			break;
 
 		case 6:
-			printf_s("%d\n", Count(&list));
+			printf("%d\n", Count(&list));
 			break;
 
 		case 7:
@@ -118,6 +129,7 @@ int main()
 	} while (choice != 0);
 
 	Clear(&list);
+	return 0;
 }
 
 
