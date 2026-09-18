@@ -18,7 +18,7 @@ void Add(List* list, Item* item);
 void Delete(List* list, int number);
 Item* GetItem(List* list, int number);
 Item* Remove(List* list, int number);
-int Insert(List* list, Item* item, int number);
+void Insert(List* list, Item* item, int number);
 int Count(List* list);
 void Clear(List* list);
 int GetIndex(List* list, Item* item);
@@ -106,18 +106,16 @@ int main(void)
 
 		case 5:
 			item = malloc(sizeof(Item));
+
 			if (item == NULL)
 			{
 				printf("Net pamyati\n");
 				break;
 			}
-			if (Insert(&list, item, number) == 0)
-			{
-				free(item);
-				printf("Nevernyi indeks\n");
-				break;
-			}
-			printf("Vstavlen na mesto %d\n", number);
+
+			Insert(&list, item, number);
+
+			printf("Element vstavlen\n");
 			break;
 
 		case 6:
@@ -210,22 +208,43 @@ int Count(List* list)
 
 Item* GetItem(List* list, int number)
 {
-	if (list == NULL || number < 0)
+	if (list == NULL)
 	{
 		return NULL;
 	}
 
-	Item* cur = list->head;
-	for (int i = 0; i < number; i++)
+	Item* current;
+
+	if (number >= 0)
 	{
-		if (cur == NULL)
+		current = list->head;
+
+		for (int i = 0; i < number; i++)
 		{
-			return NULL;
+			if (current == NULL)
+			{
+				return NULL;
+			}
+
+			current = current->next;
 		}
-		cur = cur->next;
+	}
+	else
+	{
+		current = list->tail;
+
+		for (int i = -1; i > number; i--)
+		{
+			if (current == NULL)
+			{
+				return NULL;
+			}
+
+			current = current->prev;
+		}
 	}
 
-	return cur;
+	return current;
 }
 
 Item* Remove(List* list, int number)
@@ -269,39 +288,37 @@ void Delete(List* list, int number)
 	free(item);
 }
 
-int Insert(List* list, Item* item, int number)
+void Insert(List* list, Item* item, int number)
 {
-	if (list == NULL || item == NULL || number < 0)
+	if (list == NULL || item == NULL)
 	{
-		return 0;
+		return;
 	}
 
-	if (number == Count(list))
+	Item* current = GetItem(list, number);
+
+	if (current == NULL)
 	{
 		Add(list, item);
-		return 1;
+		return;
 	}
 
-	Item* cur = GetItem(list, number);
-	if (cur == NULL)
+	if (current == list->head)
 	{
-		return 0;
-	}
+		item->prev = NULL;
+		item->next = current;
 
-	item->prev = cur->prev;
-	item->next = cur;
-
-	if (cur->prev == NULL)
-	{
+		current->prev = item;
 		list->head = item;
-	}
-	else
-	{
-		cur->prev->next = item;
+
+		return;
 	}
 
-	cur->prev = item;
-	return 1;
+	item->prev = current->prev;
+	item->next = current;
+
+	current->prev->next = item;
+	current->prev = item;
 }
 
 int GetIndex(List* list, Item* item)

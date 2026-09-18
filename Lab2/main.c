@@ -87,18 +87,16 @@ int main(void)
 
 		case 5:
 			item = malloc(sizeof(Item));
+
 			if (item == NULL)
 			{
 				printf("Net pamyati\n");
 				break;
 			}
-			if (Insert(&list, item, number) == 0)
-			{
-				free(item);
-				printf("Nevernyi indeks\n");
-				break;
-			}
-			printf("Vstavlen na mesto %d\n", number);
+
+			Insert(&list, item, number);
+
+			printf("Element vstavlen\n");
 			break;
 
 		case 6:
