@@ -43,40 +43,21 @@ int Count(List* list)
 
 Item* GetItem(List* list, int number)
 {
-	if (list == NULL)
+	if (list == NULL || number < 0)
 	{
 		return NULL;
 	}
 
-	Item* current;
+	Item* current = list->head;
 
-	if (number >= 0)
+	for (int i = 0; i < number; i++)
 	{
-		current = list->head;
-
-		for (int i = 0; i < number; i++)
+		if (current == NULL)
 		{
-			if (current == NULL)
-			{
-				return NULL;
-			}
-
-			current = current->next;
+			return NULL;
 		}
-	}
-	else
-	{
-		current = list->tail;
 
-		for (int i = -1; i > number; i--)
-		{
-			if (current == NULL)
-			{
-				return NULL;
-			}
-
-			current = current->prev;
-		}
+		current = current->next;
 	}
 
 	return current;
