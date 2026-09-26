@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include "list.h"
+#define _CRT_SECURE_NO_WARNINGS
 
 void Add(List* list, Item* item)
 {
@@ -106,7 +107,7 @@ void Delete(List* list, int number)
 
 void Insert(List* list, Item* item, int number)
 {
-	if (list == NULL || item == NULL)
+	if (list == NULL || item == NULL || number < 0)
 	{
 		return;
 	}
