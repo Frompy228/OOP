@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include "list.h"
+#define _CRT_SECURE_NO_WARNINGS
 
 void Add(List* list, Item* item)
 {
