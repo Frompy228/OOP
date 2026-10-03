@@ -1,19 +1,19 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <stdlib.h>
-
-
+#include "list.h"
 #include "subj.h"
+#include <iostream>
+#define elif else if
+
 
 void PrintList(List* list);
 
 int main(void)
 {
-	List list;
+	ChessList list;
 	int choice;
 	int number;
-	list.head = NULL;
-	list.tail = NULL;
 
 	Item* item;
 
@@ -72,41 +72,75 @@ int main(void)
 			printf("5 - PAWN\n");
 			
 
-			if (scanf("%d", &typeNumber) != 1 ||
-				typeNumber < KING || typeNumber > PAWN)
+			if (scanf("%d", &typeNumber) != 1)
 			{
 				printf("ERROR: Invalid piece type\n");
 				break;
 			}
 
-			BasePiece* piece = Create((PieceType)typeNumber);
+			int x, y, colorInt;
+			Color color;
 
-			if (piece == NULL)
+			printf("Choose x y:\n");
+			std::cin >> x >> y;
+
+			printf("Choose color:\n");
+			printf("0 - WHITE\n");
+			printf("1 - BLACK\n");
+
+			std::cin >> colorInt;
+			color = (Color)colorInt;
+
+			BasePiece* piece = nullptr;
+
+
+			if (typeNumber == 0)
+			{
+				piece = new King(x, y, color);
+			}
+			elif (typeNumber == 1)
+			{
+				piece = new Queen(x, y, color);
+			}
+			elif (typeNumber == 2)
+			{
+				piece = new Rook(x, y, color);
+			}
+			elif (typeNumber == 3)
+			{
+				piece = new Bishop(x, y, color);
+			}
+			elif (typeNumber == 4)
+			{
+				piece = new Knight(x, y, color);
+			}
+			elif (typeNumber == 5)
+			{
+				piece = new Pawn(x, y, color);
+			}
+
+
+
+			if (piece == nullptr)
 			{
 				printf("Error\n");
 				break;
 			}
 
-			if (InputPiece(piece) == 0)
-			{
-				printf("ERROR: Invalid color or coordinates\n");
-				free(piece);
-				break;
-			}
 
-			Add(&list, (Item*)piece);
+			list.Add((BasePiece*)piece);
 			printf("Figure added\n");
 
 			break;
 		}
 
 		case 2:
-			Delete(&list, number);
+			list.Delete(number);
 			break;
 
 		case 3:
-			item = GetItem(&list, number);
-			if (item == NULL)
+			item = list.GetItem(number);
+			if (item == nullptr)
 			{
 				printf("Element ne naiden\n");
 			}
@@ -117,14 +151,14 @@ int main(void)
 			break;
 
 		case 4:
-			item = Remove(&list, number);
-			if (item == NULL)
+			item = list.Remove(number);
+			if (item == nullptr)
 			{
 				printf("Element ne naiden\n");
 			}
 			else
 			{
-				printf("Removed: %p  prev: %p  next: %p\n", item, item->prev, item->next);
+				printf("Removed: %p  prev: %p  next: %p\n", item, item->Prev(), item->Next());
 				free(item);
 			}
 			break;
@@ -139,48 +173,81 @@ int main(void)
 			printf("3 - BISHOP\n");
 			printf("4 - KNIGHT\n");
 			printf("5 - PAWN\n");
-			
 
-			if (scanf("%d", &typeNumber) != 1 ||
-				typeNumber < KING || typeNumber > PAWN)
+
+			if (scanf("%d", &typeNumber) != 1)
 			{
 				printf("ERROR: Invalid piece type\n");
 				break;
 			}
 
-			BasePiece* piece = Create((PieceType)typeNumber);
+			int x, y, colorInt;
+			Color color;
 
-			if (piece == NULL)
+			printf("Choose x y:\n");
+			std::cin >> x >> y;
+
+			printf("Choose color:\n");
+			printf("0 - WHITE\n");
+			printf("1 - BLACK\n");
+
+			std::cin >> colorInt;
+			color = (Color)colorInt;
+
+			BasePiece* piece = nullptr;
+
+
+			if (typeNumber == 0)
+			{
+				piece = new King(x, y, color);
+			}
+			elif(typeNumber == 1)
+			{
+				piece = new Queen(x, y, color);
+			}
+			elif(typeNumber == 2)
+			{
+				piece = new Rook(x, y, color);
+			}
+			elif(typeNumber == 3)
+			{
+				piece = new Bishop(x, y, color);
+			}
+			elif(typeNumber == 4)
+			{
+				piece = new Knight(x, y, color);
+			}
+			elif(typeNumber == 5)
+			{
+				piece = new Pawn(x, y, color);
+			}
+
+
+			if (piece == nullptr)
 			{
 				printf("Error\n");
 				break;
 			}
 
-			if (InputPiece(piece) == 0)
-			{
-				printf("ERROR: Invalid color or coordinates\n");
-				free(piece);
-				break;
-			}
 
-			Insert(&list, (Item*)piece, number);
+			list.Insert((Item*)piece, number);
 			printf("Figure inserted\n");
 
 			break;
 		}
 
 		case 6:
-			printf("%d\n", Count(&list));
+			printf("%d\n", list.Count());
 			break;
 
 		case 7:
-			Clear(&list);
+			list.Clear();
 			printf("List cleared\n");
 			break;
 
 		case 8:
-			item = GetItem(&list, number);
-			printf("Index: %d\n", GetIndex(&list, item));
+			item = list.GetItem(number);
+			printf("Index: %d\n", list.GetIndex(item));
 			break;
 
 		case 9:
@@ -188,7 +255,7 @@ int main(void)
 			break;
 
 		case 10:
-			PrintChessList(&list);
+			list.Print();
 			break;
 
 		case 11:
@@ -203,7 +270,7 @@ int main(void)
 				break;
 			}
 
-			FindByAttack(&list, x, y, true);
+			list.FindByAttack(x, y, true);
 			break;
 		}
 
@@ -219,7 +286,7 @@ int main(void)
 				break;
 			}
 
-			FindByAttack(&list, x, y, false);
+			list.FindByAttack(x, y, false);
 			break;
 		}
 
@@ -237,7 +304,7 @@ int main(void)
 				break;
 			}
 
-			FindByColor(&list, (Color)colorNumber);
+			list.FindByColor((Color)colorNumber);
 			break;
 		}
 
@@ -255,8 +322,8 @@ int main(void)
 				break;
 			}
 
-			SortByRank(&list, porydok);
-			PrintChessList(&list);
+			list.SortByRank(porydok);
+			list.Print();
 			break;
 		}
 
@@ -269,7 +336,7 @@ int main(void)
 		}
 	} while (choice != 0);
 
-	Clear(&list);
+	list.Clear();
 	return 0;
 }
 
@@ -277,15 +344,15 @@ int main(void)
 
 void PrintList(List* list)
 {
-	printf("List: %p  Head: %p  Tail: %p\n", list, list->head, list->tail);
+	printf("List: %p  Head: %p  Tail: %p\n", list, list->Head(), list->Tail());
 	printf("#\tp\t\t\tprev\t\t\tnext\n");
 
 	int i = 0;
-	Item* p = list->head;
-	while (p != NULL)
+	const Item* p = list->Head();
+	while (p != nullptr)
 	{
-		printf("%d\t%p\t%p\t%p\n", i, p, p->prev, p->next);
-		p = p->next;
+		printf("%d\t%p\t%p\t%p\n", i, p, p->Prev(), p->Next());
+		p = p->Next();
 		i++;
 	}
 }

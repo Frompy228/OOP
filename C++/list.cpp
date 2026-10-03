@@ -1,15 +1,8 @@
-#include <stdlib.h>
+#include <cstdio>
 #include "list.h"
-#define _CRT_SECURE_NO_WARNINGS
 
 void Add(List* list, Item* item)
 {
-	if (list == NULL || item == NULL)
-	{
-		return;
-	}
-	item->next = NULL;
-	item->prev = list->tail;
 	if (list->head == NULL)
 	{
 		list->head = item;
@@ -21,15 +14,11 @@ void Add(List* list, Item* item)
 		item->prev = list->tail;
 		list->tail = item;
 	}
+	printf_s("+1");
 }
 
 int Count(List* list)
 {
-	if (list == NULL)
-	{
-		return 0;
-	}
-
 	int count = 0;
 	Item* cur = list->head;
 
@@ -44,24 +33,23 @@ int Count(List* list)
 
 Item* GetItem(List* list, int number)
 {
-	if (list == NULL || number < 0)
+	if (number <= 0)
 	{
+		printf("Ne Popal\n");
 		return NULL;
 	}
 
-	Item* current = list->head;
-
-	for (int i = 0; i < number; i++)
+	Item* cur = list->head;
+	for (int i = 1; i < number; i++)
 	{
-		if (current == NULL)
+		if (cur == NULL)
 		{
 			return NULL;
 		}
-
-		current = current->next;
+		cur = cur->next;
 	}
 
-	return current;
+	return cur;
 }
 
 Item* Remove(List* list, int number)
@@ -102,7 +90,7 @@ Item* Remove(List* list, int number)
 void Delete(List* list, int number)
 {
 	Item* item = Remove(list, number);
-	free(item);
+	delete item;
 }
 
 void Insert(List* list, Item* item, int number)
@@ -112,30 +100,25 @@ void Insert(List* list, Item* item, int number)
 		return;
 	}
 
-	Item* current = GetItem(list, number);
-
-	if (current == NULL)
+	Item* cur = GetItem(list, number);
+	if (cur == NULL)
 	{
-		Add(list, item);
 		return;
 	}
 
-	if (current == list->head)
-	{
-		item->prev = NULL;
-		item->next = current;
+	item->prev = cur->prev;
+	item->next = cur;
 
-		current->prev = item;
+	if (cur->prev == NULL)
+	{
 		list->head = item;
-
-		return;
+	}
+	else
+	{
+		cur->prev->next = item;
 	}
 
-	item->prev = current->prev;
-	item->next = current;
-
-	current->prev->next = item;
-	current->prev = item;
+	cur->prev = item;
 }
 
 int GetIndex(List* list, Item* item)
@@ -146,7 +129,7 @@ int GetIndex(List* list, Item* item)
 	}
 
 	Item* cur = list->head;
-	int number = 0;
+	int number = 1;
 	while (cur != NULL)
 	{
 		if (cur == item)
@@ -169,6 +152,6 @@ void Clear(List* list)
 
 	while (list->head != NULL)
 	{
-		Delete(list, 0);
+		Delete(list, 1);
 	}
 }
