@@ -143,9 +143,9 @@
     <ClInclude Include="subj.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="list.c" />
-    <ClCompile Include="main.c" />
-    <ClCompile Include="subj.c" />
+    <ClCompile Include="list.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="subj.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

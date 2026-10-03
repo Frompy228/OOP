@@ -1,18 +1,8 @@
-#ifndef SUBJ_H
-#define SUBJ_H
+#pragma once
 
 #include "list.h"
 #include <stdbool.h>
-
-typedef enum
-{
-    KING,
-    QUEEN,
-    ROOK,
-    BISHOP,
-    KNIGHT,
-    PAWN
-} PieceType;
+#include <string>
 
 typedef enum
 {
@@ -20,27 +10,81 @@ typedef enum
     BLACK
 } Color;
 
-typedef struct
+class BasePiece : public Item
 {
-    struct Item* next;
-    struct Item* prev;
+public:
+    BasePiece(int x, int y, Color color);
+    int getX();
+    int getY();
+    Color getColor();
+    virtual bool CanAttack(int x, int y);
+    virtual std::string getName() = 0;
 
+protected:
     int x;
     int y;
 
     Color color;
-    PieceType type;
-} BasePiece;
+    
+};
 
+class King : public BasePiece
+{
+public:
+    King(int x, int y, Color color);
+    std::string getName() override;
+    bool CanAttack(int x, int y) override;
+};
 
-BasePiece* Create(PieceType type);
+class Queen : public BasePiece
+{
+public:
+    Queen(int x, int y, Color color);
+    std::string getName() override;
+    bool CanAttack(int x, int y) override;
+};
+
+class Rook : public BasePiece
+{
+public:
+    Rook(int x, int y, Color color);
+    std::string getName() override;
+    bool CanAttack(int x, int y) override;
+};
+
+class Bishop : public BasePiece
+{
+public:
+    Bishop(int x, int y, Color color);
+    std::string getName() override;
+    bool CanAttack(int x, int y) override;
+};
+
+class Knight : public BasePiece
+{
+public:
+    Knight(int x, int y, Color color);
+    std::string getName() override;
+    bool CanAttack(int x, int y) override;
+};
+
+class Pawn : public BasePiece
+{
+public:
+    Pawn(int x, int y, Color color);
+    std::string getName() override;
+    bool CanAttack(int x, int y) override;
+};
+
+class ChessList : public List
+{
+public:
+    void Print();
+    void SortByRank(int porydok);
+    void FindByColor(Color color);
+    void FindByAttack(int x, int y, bool mustAttack);
+};
+
 int InputPiece(BasePiece* piece);
-
-void PrintChessList(List* list);
-void SortByRank(List* list, int porydok);
-void FindByColor(List* list, Color color);
-void FindByAttack(List* list, int x, int y, bool mustAttack);
 void PrintPiece(BasePiece* piece);
-bool CanAttackBasePiece(BasePiece* piece, int x, int y);
 
-#endif

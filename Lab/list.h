@@ -1,25 +1,41 @@
-#ifndef LIST_H
-#define LIST_H
+#pragma once
 
-typedef struct Item
+class List;
+
+class Item
 {
-	struct Item* next;
-	struct Item* prev;
-} Item;
+public:
+	friend class List;
+	virtual ~Item();
 
-typedef struct List
+	const Item* Next() const;
+	const Item* Prev() const;
+private:
+	Item* next = nullptr;
+	Item* prev = nullptr;
+};
+
+class List
 {
-	Item* head;
-	Item* tail;
-} List;
+public:
+	List() = default;
+	~List();
 
-void Add(List* list, Item* item);
-void Delete(List* list, int number);
-Item* GetItem(List* list, int number);
-Item* Remove(List* list, int number);
-void Insert(List* list, Item* item, int number);
-int Count(List* list);
-void Clear(List* list);
-int GetIndex(List* list, Item* item);
+public:
+	const Item* Head() const;
+	const Item* Tail() const;
 
-#endif
+	void Add(Item* item);
+	void Delete(int number);
+	Item* GetItem(int number);
+	Item* Remove(int number);
+	void Insert(Item* item, int number);
+	int Count();
+	void Clear();
+	int GetIndex(Item* item);
+
+protected:
+	Item* head = nullptr;
+	Item* tail = nullptr;
+};
+

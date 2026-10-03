@@ -2,36 +2,31 @@
 #include "list.h"
 #define _CRT_SECURE_NO_WARNINGS
 
-void Add(List* list, Item* item)
+void List::Add(Item* item)
 {
-	if (list == NULL || item == NULL)
+	if (item == NULL)
 	{
 		return;
 	}
 	item->next = NULL;
-	item->prev = list->tail;
-	if (list->head == NULL)
+	item->prev = tail;
+	if (head == NULL)
 	{
-		list->head = item;
-		list->tail = item;
+		head = item;
+		tail = item;
 	}
 	else
 	{
-		list->tail->next = item;
-		item->prev = list->tail;
-		list->tail = item;
+		tail->next = item;
+		item->prev = tail;
+		tail = item;
 	}
 }
 
-int Count(List* list)
+int List::Count()
 {
-	if (list == NULL)
-	{
-		return 0;
-	}
-
 	int count = 0;
-	Item* cur = list->head;
+	Item* cur = head;
 
 	while (cur != NULL)
 	{
@@ -42,14 +37,14 @@ int Count(List* list)
 	return count;
 }
 
-Item* GetItem(List* list, int number)
+Item* List::GetItem(int number)
 {
-	if (list == NULL || number < 0)
+	if (number < 0)
 	{
 		return NULL;
 	}
 
-	Item* current = list->head;
+	Item* current = head;
 
 	for (int i = 0; i < number; i++)
 	{
@@ -64,9 +59,9 @@ Item* GetItem(List* list, int number)
 	return current;
 }
 
-Item* Remove(List* list, int number)
+Item* List::Remove(int number)
 {
-	Item* cur = GetItem(list, number);
+	Item* cur = GetItem(number);
 	if (cur == NULL)
 	{
 		return NULL;
@@ -77,7 +72,7 @@ Item* Remove(List* list, int number)
 
 	if (prev == NULL)
 	{
-		list->head = next;
+		head = next;
 	}
 	else
 	{
@@ -86,7 +81,7 @@ Item* Remove(List* list, int number)
 
 	if (next == NULL)
 	{
-		list->tail = prev;
+		tail = prev;
 	}
 	else
 	{
@@ -99,34 +94,34 @@ Item* Remove(List* list, int number)
 	return cur;
 }
 
-void Delete(List* list, int number)
+void List::Delete(int number)
 {
-	Item* item = Remove(list, number);
-	free(item);
+	Item* item = Remove(number);
+	delete item;
 }
 
-void Insert(List* list, Item* item, int number)
+void List::Insert(Item* item, int number)
 {
-	if (list == NULL || item == NULL)
+	if (item == NULL)
 	{
 		return;
 	}
 
-	Item* current = GetItem(list, number);
+	Item* current = GetItem(number);
 
 	if (current == NULL)
 	{
-		Add(list, item);
+		Add(item);
 		return;
 	}
 
-	if (current == list->head)
+	if (current == head)
 	{
 		item->prev = NULL;
 		item->next = current;
 
 		current->prev = item;
-		list->head = item;
+		head = item;
 
 		return;
 	}
@@ -138,14 +133,14 @@ void Insert(List* list, Item* item, int number)
 	current->prev = item;
 }
 
-int GetIndex(List* list, Item* item)
+int List::GetIndex(Item* item)
 {
-	if (list == NULL || item == NULL)
+	if (item == NULL)
 	{
 		return -1;
 	}
 
-	Item* cur = list->head;
+	Item* cur = head;
 	int number = 0;
 	while (cur != NULL)
 	{
@@ -160,15 +155,41 @@ int GetIndex(List* list, Item* item)
 	return -1;
 }
 
-void Clear(List* list)
+void List::Clear()
 {
-	if (list == NULL)
+	while (head != NULL)
 	{
-		return;
-	}
-
-	while (list->head != NULL)
-	{
-		Delete(list, 0);
+		Delete(0);
 	}
 }
+
+const Item* Item::Next() const
+{
+	return next;
+}
+
+const Item* Item::Prev() const
+{
+	return prev;
+}
+
+Item::~Item()
+{
+	next = prev = nullptr;
+}
+
+List::~List()
+{
+	Clear();
+}
+
+const Item* List::Head() const
+{
+	return head;
+}
+
+const Item* List::Tail() const
+{
+	return tail;
+}
+
