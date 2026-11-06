@@ -21,9 +21,11 @@
   <ItemGroup>
     <ClCompile Include="..\list.cpp" />
     <ClCompile Include="..\main.cpp" />
+    <ClCompile Include="..\subj.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\list.h" />
+    <ClInclude Include="..\subj.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
