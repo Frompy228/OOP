@@ -1,3 +1,4 @@
+
 #pragma once
 
 #include "list.h"
@@ -11,22 +12,27 @@ public:
     BasePiece(const BasePiece&) = delete;
     BasePiece& operator=(const BasePiece&) = delete;
 
+    bool operator>(const BasePiece& right) const;
+    bool operator<(const BasePiece& right) const;
+    bool operator==(Color color) const;
+
     static BasePiece* Create(PieceType type);
-    virtual bool Input() = 0;
-    virtual void Print() const = 0;
+
+    bool Input();
+    void Print() const;
+
     virtual bool CanAttack(int targetX, int targetY) const;
     virtual PieceType GetType() const = 0;
+    virtual std::string GetName() const = 0;
+
     Color GetColor() const;
 
 protected:
     BasePiece() = default;
-    bool ReadFields(const char* name);
-    void PrintFields(const char* name) const;
 
     int x = 1;
     int y = 1;
     Color color = Color::White;
-
 };
 
 class ChessList : public List
@@ -36,6 +42,7 @@ public:
     ChessList(const ChessList&) = delete;
     ChessList& operator=(const ChessList&) = delete;
 
+    BasePiece& operator[](int index);
     BasePiece* GetPiece(int index);
 
     void Print() const;

@@ -1,3 +1,4 @@
+
 #include "subj.h"
 
 #include <cstdlib>
@@ -13,18 +14,17 @@ namespace
     class King : public BasePiece
     {
     public:
-        bool Input() override
-        { 
-            return ReadFields("King"); 
-        }
-
-        void Print() const override
-        { 
-            PrintFields("King"); 
+        std::string GetName() const override
+        {
+            return "King";
         }
 
         bool CanAttack(int targetX, int targetY) const override
         {
+            if (!BasePiece::CanAttack(targetX, targetY))
+            {
+                return false;
+            }
             return std::abs(targetX - x) <= 1 && std::abs(targetY - y) <= 1;
         }
 
@@ -37,18 +37,17 @@ namespace
     class Queen : public BasePiece
     {
     public:
-        bool Input() override
-        { 
-            return ReadFields("Queen"); 
-        }
-
-        void Print() const override
-        { 
-            PrintFields("Queen"); 
+        std::string GetName() const override
+        {
+            return "Queen";
         }
 
         bool CanAttack(int targetX, int targetY) const override
         {
+            if (!BasePiece::CanAttack(targetX, targetY))
+            {
+                return false;
+            }
             return targetX == x || targetY == y
                 || std::abs(targetX - x) == std::abs(targetY - y);
         }
@@ -62,18 +61,17 @@ namespace
     class Rook : public BasePiece
     {
     public:
-        bool Input() override
-        { 
-            return ReadFields("Rook"); 
-        }
-
-        void Print() const override
-        { 
-            PrintFields("Rook"); 
+        std::string GetName() const override
+        {
+            return "Rook";
         }
 
         bool CanAttack(int targetX, int targetY) const override
         {
+            if (!BasePiece::CanAttack(targetX, targetY))
+            {
+                return false;
+            }
             return targetX == x || targetY == y;
         }
 
@@ -86,18 +84,17 @@ namespace
     class Bishop : public BasePiece
     {
     public:
-        bool Input() override
-        { 
-            return ReadFields("Bishop"); 
-        }
-
-        void Print() const override
-        { 
-            PrintFields("Bishop"); 
+        std::string GetName() const override
+        {
+            return "Bishop";
         }
 
         bool CanAttack(int targetX, int targetY) const override
         {
+            if (!BasePiece::CanAttack(targetX, targetY))
+            {
+                return false;
+            }
             return std::abs(targetX - x) == std::abs(targetY - y);
         }
 
@@ -110,18 +107,17 @@ namespace
     class Knight : public BasePiece
     {
     public:
-        bool Input() override
-        { 
-            return ReadFields("Knight"); 
-        }
-
-        void Print() const override
-        { 
-            PrintFields("Knight"); 
+        std::string GetName() const override
+        {
+            return "Knight";
         }
 
         bool CanAttack(int targetX, int targetY) const override
         {
+            if (!BasePiece::CanAttack(targetX, targetY))
+            {
+                return false;
+            }
             const int dx = std::abs(targetX - x);
             const int dy = std::abs(targetY - y);
             return (dx == 2 && dy == 1) || (dx == 1 && dy == 2);
@@ -136,18 +132,17 @@ namespace
     class Pawn : public BasePiece
     {
     public:
-        bool Input() override
-        { 
-            return ReadFields("Pawn"); 
-        }
-
-        void Print() const override
-        { 
-            PrintFields("Pawn"); 
+        std::string GetName() const override
+        {
+            return "Pawn";
         }
 
         bool CanAttack(int targetX, int targetY) const override
         {
+            if (!BasePiece::CanAttack(targetX, targetY))
+            {
+                return false;
+            }
             const int direction = color == Color::White ? 1 : -1;
             return std::abs(targetX - x) == 1 && targetY == y + direction;
         }
@@ -159,7 +154,20 @@ namespace
     };
 }
 
+bool BasePiece::operator>(const BasePiece& right) const
+{
+    return this->GetType() > right.GetType();
+}
 
+bool BasePiece::operator<(const BasePiece& right) const
+{
+    return this->GetType() < right.GetType();
+}
+
+bool BasePiece::operator==(Color color) const
+{
+    return GetColor() == color;
+}
 
 BasePiece* BasePiece::Create(PieceType type)
 {
@@ -175,13 +183,13 @@ BasePiece* BasePiece::Create(PieceType type)
     return nullptr;
 }
 
-
 bool BasePiece::CanAttack(int targetX, int targetY) const
 {
     if (!IsOnBoard(targetX, targetY) || (x == targetX && y == targetY))
     {
         return false;
     }
+    return true;
 }
 
 Color BasePiece::GetColor() const
@@ -189,10 +197,10 @@ Color BasePiece::GetColor() const
     return color;
 }
 
-bool BasePiece::ReadFields(const char* name)
+bool BasePiece::Input()
 {
     int newX, newY, colorNumber;
-    std::cout << name << " x y (1-8): ";
+    std::cout << GetName() << " x y (1-8): ";
     if (!(std::cin >> newX >> newY) || !IsOnBoard(newX, newY))
     {
         std::cout << "Invalid coordinates.\n";
@@ -212,10 +220,15 @@ bool BasePiece::ReadFields(const char* name)
     return true;
 }
 
-void BasePiece::PrintFields(const char* name) const
+void BasePiece::Print() const
 {
-    std::cout << name << " (" << x << ", " << y << "), "
-              << (color == Color::White ? "White" : "Black") << '\n';
+    std::cout << GetName() << " (" << x << ", " << y << "), "
+        << (color == Color::White ? "White" : "Black") << '\n';
+}
+
+BasePiece& ChessList::operator[](int index)
+{
+    return *GetPiece(index);
 }
 
 BasePiece* ChessList::GetPiece(int index)
@@ -248,7 +261,7 @@ void ChessList::FindByColor(Color color) const
     for (const Item* item = Head(); item; item = item->Next())
     {
         const BasePiece* piece = dynamic_cast<const BasePiece*>(item);
-        if (piece && piece->GetColor() == color)
+        if (piece && *piece == color)
         {
             piece->Print();
             found = true;
@@ -294,18 +307,11 @@ void ChessList::SortByRank(bool ascending)
         bool swapped = false;
         for (int i = 0; i < end; ++i)
         {
-            const BasePiece* left = GetPiece(i);
-            const BasePiece* right = GetPiece(i + 1);
-            if (!left || !right)
-            {
-                continue;
-            }
+            const BasePiece& left = (*this)[i];
+            const BasePiece& right = (*this)[i + 1];
 
-            const PieceType leftType = left->GetType();
-            const PieceType rightType = right->GetType();
-            if (ascending ? leftType > rightType : leftType < rightType)
+            if (ascending ? left > right : left < right)
             {
-                // Move the left node past the right one using the List interface.
                 Insert(Remove(i), i + 1);
                 swapped = true;
             }
