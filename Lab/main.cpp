@@ -31,11 +31,7 @@ namespace
 
     BasePiece* ReadPiece()
     {
-        const PieceType pieceTypes[] = {
-            PieceType::King, PieceType::Queen, PieceType::Rook,
-            PieceType::Bishop, PieceType::Knight, PieceType::Pawn
-        };
-        std::cout << "0 - King, 1 - Queen, 2 - Rook, 3 - Bishop, 4 - Knight, 5 - Pawn\n";
+        std::cout << "0 - Pawn, 1 - Knight, 2 - Bishop, 3 - Rook, 4 - Queen, 5 - King\n";
         int type;
         if (!ReadNumber("Choose a piece: ", type))
         {
@@ -48,7 +44,7 @@ namespace
             return nullptr;
         }
 
-        BasePiece* piece = BasePiece::Create(pieceTypes[type]);
+        BasePiece* piece = BasePiece::Create(static_cast<PieceType>(type));
         if (!piece->Input())
         {
             delete piece;
