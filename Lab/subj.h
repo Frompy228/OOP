@@ -12,14 +12,14 @@ public:
     BasePiece& operator=(const BasePiece&) = delete;
 
     static BasePiece* Create(PieceType type);
-    bool Input();
-    void Print() const;
-    bool CanAttack(int targetX, int targetY) const;
-    PieceType GetType() const;
+    virtual bool Input() = 0;
+    virtual void Print() const = 0;
+    virtual bool CanAttack(int targetX, int targetY) const;
+    virtual PieceType GetType() const = 0;
     Color GetColor() const;
 
 protected:
-    explicit BasePiece(PieceType type);
+    BasePiece() = default;
     bool ReadFields(const char* name);
     void PrintFields(const char* name) const;
 
@@ -27,8 +27,6 @@ protected:
     int y = 1;
     Color color = Color::White;
 
-private:
-    const PieceType type;
 };
 
 class ChessList : public List
