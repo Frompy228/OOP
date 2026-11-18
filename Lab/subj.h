@@ -1,3 +1,4 @@
+
 #pragma once
 
 #include "list.h"
@@ -10,6 +11,10 @@ class BasePiece : public Item
 public:
     BasePiece(const BasePiece&) = delete;
     BasePiece& operator=(const BasePiece&) = delete;
+
+    bool operator>(const BasePiece& right) const;
+    bool operator<(const BasePiece& right) const;
+    bool operator==(Color color) const;
 
     static BasePiece* Create(PieceType type);
 
@@ -37,6 +42,7 @@ public:
     ChessList(const ChessList&) = delete;
     ChessList& operator=(const ChessList&) = delete;
 
+    BasePiece& operator[](int index);
     BasePiece* GetPiece(int index);
 
     void Print() const;
