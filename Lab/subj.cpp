@@ -13,153 +13,107 @@ namespace
     class King : public BasePiece
     {
     public:
-        bool Input() override
-        { 
-            return ReadFields("King"); 
-        }
+        King() : BasePiece(PieceType::King) {}
+        bool Input()
+            { return ReadFields("King"); }
 
-        void Print() const override
-        { 
-            PrintFields("King"); 
-        }
+        void Print() const
+            { PrintFields("King"); }
 
-        bool CanAttack(int targetX, int targetY) const override
+        bool CanAttack(int targetX, int targetY) const
         {
             return std::abs(targetX - x) <= 1 && std::abs(targetY - y) <= 1;
-        }
-
-        PieceType GetType() const override
-        {
-            return PieceType::King;
         }
     };
 
     class Queen : public BasePiece
     {
     public:
-        bool Input() override
-        { 
-            return ReadFields("Queen"); 
-        }
+        Queen() : BasePiece(PieceType::Queen) {}
+        bool Input()
+            { return ReadFields("Queen"); }
 
-        void Print() const override
-        { 
-            PrintFields("Queen"); 
-        }
+        void Print() const
+            { PrintFields("Queen"); }
 
-        bool CanAttack(int targetX, int targetY) const override
+        bool CanAttack(int targetX, int targetY) const
         {
             return targetX == x || targetY == y
                 || std::abs(targetX - x) == std::abs(targetY - y);
-        }
-
-        PieceType GetType() const override
-        {
-            return PieceType::Queen;
         }
     };
 
     class Rook : public BasePiece
     {
     public:
-        bool Input() override
-        { 
-            return ReadFields("Rook"); 
-        }
+        Rook() : BasePiece(PieceType::Rook) {}
+        bool Input()
+            { return ReadFields("Rook"); }
 
-        void Print() const override
-        { 
-            PrintFields("Rook"); 
-        }
+        void Print() const
+            { PrintFields("Rook"); }
 
-        bool CanAttack(int targetX, int targetY) const override
+        bool CanAttack(int targetX, int targetY) const
         {
             return targetX == x || targetY == y;
-        }
-
-        PieceType GetType() const override
-        {
-            return PieceType::Rook;
         }
     };
 
     class Bishop : public BasePiece
     {
     public:
-        bool Input() override
-        { 
-            return ReadFields("Bishop"); 
-        }
+        Bishop() : BasePiece(PieceType::Bishop) {}
+        bool Input()
+            { return ReadFields("Bishop"); }
 
-        void Print() const override
-        { 
-            PrintFields("Bishop"); 
-        }
+        void Print() const
+            { PrintFields("Bishop"); }
 
-        bool CanAttack(int targetX, int targetY) const override
+        bool CanAttack(int targetX, int targetY) const
         {
             return std::abs(targetX - x) == std::abs(targetY - y);
-        }
-
-        PieceType GetType() const override
-        {
-            return PieceType::Bishop;
         }
     };
 
     class Knight : public BasePiece
     {
     public:
-        bool Input() override
-        { 
-            return ReadFields("Knight"); 
-        }
+        Knight() : BasePiece(PieceType::Knight) {}
+        bool Input()
+            { return ReadFields("Knight"); }
 
-        void Print() const override
-        { 
-            PrintFields("Knight"); 
-        }
+        void Print() const
+            { PrintFields("Knight"); }
 
-        bool CanAttack(int targetX, int targetY) const override
+        bool CanAttack(int targetX, int targetY) const
         {
             const int dx = std::abs(targetX - x);
             const int dy = std::abs(targetY - y);
             return (dx == 2 && dy == 1) || (dx == 1 && dy == 2);
-        }
-
-        PieceType GetType() const override
-        {
-            return PieceType::Knight;
         }
     };
 
     class Pawn : public BasePiece
     {
     public:
-        bool Input() override
-        { 
-            return ReadFields("Pawn"); 
-        }
+        Pawn() : BasePiece(PieceType::Pawn) {}
+        bool Input()
+            { return ReadFields("Pawn"); }
 
-        void Print() const override
-        { 
-            PrintFields("Pawn"); 
-        }
+        void Print() const
+            { PrintFields("Pawn"); }
 
-        bool CanAttack(int targetX, int targetY) const override
+        bool CanAttack(int targetX, int targetY) const
         {
             const int direction = color == Color::White ? 1 : -1;
             return std::abs(targetX - x) == 1 && targetY == y + direction;
         }
-
-        PieceType GetType() const override
-        {
-            return PieceType::Pawn;
-        }
     };
 }
 
-
+BasePiece::BasePiece(PieceType type) : type(type)
+{
+}
 
 BasePiece* BasePiece::Create(PieceType type)
 {
@@ -175,6 +129,32 @@ BasePiece* BasePiece::Create(PieceType type)
     return nullptr;
 }
 
+bool BasePiece::Input()
+{
+    switch (type)
+    {
+    case PieceType::King:   return static_cast<King*>(this)->Input();
+    case PieceType::Queen:  return static_cast<Queen*>(this)->Input();
+    case PieceType::Rook:   return static_cast<Rook*>(this)->Input();
+    case PieceType::Bishop: return static_cast<Bishop*>(this)->Input();
+    case PieceType::Knight: return static_cast<Knight*>(this)->Input();
+    case PieceType::Pawn:   return static_cast<Pawn*>(this)->Input();
+    }
+    return false;
+}
+
+void BasePiece::Print() const
+{
+    switch (type)
+    {
+    case PieceType::King:   static_cast<const King*>(this)->Print(); break;
+    case PieceType::Queen:  static_cast<const Queen*>(this)->Print(); break;
+    case PieceType::Rook:   static_cast<const Rook*>(this)->Print(); break;
+    case PieceType::Bishop: static_cast<const Bishop*>(this)->Print(); break;
+    case PieceType::Knight: static_cast<const Knight*>(this)->Print(); break;
+    case PieceType::Pawn:   static_cast<const Pawn*>(this)->Print(); break;
+    }
+}
 
 bool BasePiece::CanAttack(int targetX, int targetY) const
 {
@@ -182,6 +162,22 @@ bool BasePiece::CanAttack(int targetX, int targetY) const
     {
         return false;
     }
+
+    switch (type)
+    {
+    case PieceType::King:   return static_cast<const King*>(this)->CanAttack(targetX, targetY);
+    case PieceType::Queen:  return static_cast<const Queen*>(this)->CanAttack(targetX, targetY);
+    case PieceType::Rook:   return static_cast<const Rook*>(this)->CanAttack(targetX, targetY);
+    case PieceType::Bishop: return static_cast<const Bishop*>(this)->CanAttack(targetX, targetY);
+    case PieceType::Knight: return static_cast<const Knight*>(this)->CanAttack(targetX, targetY);
+    case PieceType::Pawn:   return static_cast<const Pawn*>(this)->CanAttack(targetX, targetY);
+    }
+    return false;
+}
+
+PieceType BasePiece::GetType() const
+{
+    return type;
 }
 
 Color BasePiece::GetColor() const
