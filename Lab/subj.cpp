@@ -1,3 +1,4 @@
+
 #include "subj.h"
 
 #include <cstdlib>
@@ -153,7 +154,20 @@ namespace
     };
 }
 
+bool BasePiece::operator>(const BasePiece& right) const
+{
+    return this->GetType() > right.GetType();
+}
 
+bool BasePiece::operator<(const BasePiece& right) const
+{
+    return this->GetType() < right.GetType();
+}
+
+bool BasePiece::operator==(Color color) const
+{
+    return GetColor() == color;
+}
 
 BasePiece* BasePiece::Create(PieceType type)
 {
@@ -168,7 +182,6 @@ BasePiece* BasePiece::Create(PieceType type)
     }
     return nullptr;
 }
-
 
 bool BasePiece::CanAttack(int targetX, int targetY) const
 {
@@ -211,6 +224,14 @@ void BasePiece::Print() const
 {
     std::cout << GetName() << " (" << x << ", " << y << "), "
         << (color == Color::White ? "White" : "Black") << '\n';
+<<<<<<< HEAD
+=======
+}
+
+BasePiece& ChessList::operator[](int index)
+{
+    return *GetPiece(index);
+>>>>>>> 1f7ed6f (Lab7)
 }
 
 BasePiece* ChessList::GetPiece(int index)
@@ -243,7 +264,7 @@ void ChessList::FindByColor(Color color) const
     for (const Item* item = Head(); item; item = item->Next())
     {
         const BasePiece* piece = dynamic_cast<const BasePiece*>(item);
-        if (piece && piece->GetColor() == color)
+        if (piece && *piece == color)
         {
             piece->Print();
             found = true;
@@ -289,18 +310,11 @@ void ChessList::SortByRank(bool ascending)
         bool swapped = false;
         for (int i = 0; i < end; ++i)
         {
-            const BasePiece* left = GetPiece(i);
-            const BasePiece* right = GetPiece(i + 1);
-            if (!left || !right)
-            {
-                continue;
-            }
+            const BasePiece& left = (*this)[i];
+            const BasePiece& right = (*this)[i + 1];
 
-            const PieceType leftType = left->GetType();
-            const PieceType rightType = right->GetType();
-            if (ascending ? leftType > rightType : leftType < rightType)
+            if (ascending ? left > right : left < right)
             {
-                // Move the left node past the right one using the List interface.
                 Insert(Remove(i), i + 1);
                 swapped = true;
             }
